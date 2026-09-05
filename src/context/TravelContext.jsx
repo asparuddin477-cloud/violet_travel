@@ -28,22 +28,34 @@ export const TravelProvider = ({ children }) => {
   // Load initial state from localStorage or fallback to defaults
   const [routes, setRoutes] = useState(() => {
     const saved = localStorage.getItem('vt_routes');
-    return saved ? JSON.parse(saved) : INITIAL_ROUTES;
+    if (saved !== null) {
+      try { return JSON.parse(saved); } catch { return []; }
+    }
+    return INITIAL_ROUTES;
   });
 
   const [vehicles, setVehicles] = useState(() => {
     const saved = localStorage.getItem('vt_vehicles');
-    return saved ? JSON.parse(saved) : INITIAL_VEHICLES;
+    if (saved !== null) {
+      try { return JSON.parse(saved); } catch { return []; }
+    }
+    return INITIAL_VEHICLES;
   });
 
   const [drivers, setDrivers] = useState(() => {
     const saved = localStorage.getItem('vt_drivers');
-    return saved ? JSON.parse(saved) : INITIAL_DRIVERS;
+    if (saved !== null) {
+      try { return JSON.parse(saved); } catch { return []; }
+    }
+    return INITIAL_DRIVERS;
   });
 
   const [schedules, setSchedules] = useState(() => {
     const saved = localStorage.getItem('vt_schedules');
-    return saved ? JSON.parse(saved) : INITIAL_SCHEDULES;
+    if (saved !== null) {
+      try { return JSON.parse(saved); } catch { return []; }
+    }
+    return INITIAL_SCHEDULES;
   });
 
   const [bookings, setBookings] = useState(() => {
@@ -118,13 +130,10 @@ export const TravelProvider = ({ children }) => {
 
     // 1. Subscribe to Routes
     const unsubRoutes = subscribeCollection('routes', (remoteRoutes) => {
-      if (remoteRoutes && remoteRoutes.length > 0) {
+      if (Array.isArray(remoteRoutes)) {
         setRoutes(remoteRoutes);
         setIsCloudConnected(true);
         setCloudSyncState('live');
-      } else if (!autoSeededRef.current) {
-        // Auto-seed if collection is empty
-        handleAutoSeed();
       }
     }, (err) => {
       setCloudError(err.message);
@@ -133,21 +142,21 @@ export const TravelProvider = ({ children }) => {
 
     // 2. Subscribe to Vehicles
     const unsubVehicles = subscribeCollection('vehicles', (remoteVehicles) => {
-      if (remoteVehicles && remoteVehicles.length > 0) {
+      if (Array.isArray(remoteVehicles)) {
         setVehicles(remoteVehicles);
       }
     });
 
     // 3. Subscribe to Drivers
     const unsubDrivers = subscribeCollection('drivers', (remoteDrivers) => {
-      if (remoteDrivers && remoteDrivers.length > 0) {
+      if (Array.isArray(remoteDrivers)) {
         setDrivers(remoteDrivers);
       }
     });
 
     // 4. Subscribe to Schedules
     const unsubSchedules = subscribeCollection('schedules', (remoteSchedules) => {
-      if (remoteSchedules && remoteSchedules.length > 0) {
+      if (Array.isArray(remoteSchedules)) {
         setSchedules(remoteSchedules);
       }
     });
@@ -195,25 +204,7 @@ export const TravelProvider = ({ children }) => {
     };
   }, []);
 
-  // Auto-seed initial data if Firestore is empty on first load
-  const handleAutoSeed = async () => {
-    if (autoSeededRef.current || !isFirebaseConfigured) return;
-    autoSeededRef.current = true;
-    try {
-      await seedInitialDataToFirebase({
-        routes: INITIAL_ROUTES,
-        vehicles: INITIAL_VEHICLES,
-        drivers: INITIAL_DRIVERS,
-        schedules: INITIAL_SCHEDULES,
-        bookings: [],
-        settings: INITIAL_SETTINGS
-      });
-      setIsCloudConnected(true);
-      setCloudSyncState('live');
-    } catch (e) {
-      console.warn('Auto-seed to Firestore skipped or failed:', e);
-    }
-  };
+
 
   // Manual Push / Sync to Cloud
   const syncToCloud = async () => {
@@ -272,6 +263,18 @@ export const TravelProvider = ({ children }) => {
         await deleteDocument('routes', id);
       } catch (err) {
         console.error('Error deleting route in Firestore:', err);
+      }
+    }
+  };
+
+  const clearAllRoutes = async () => {
+    setRoutes([]);
+    localStorage.setItem('vt_routes', JSON.stringify([]));
+    if (isFirebaseConfigured) {
+      try {
+        await clearCollection('routes');
+      } catch (err) {
+        console.error('Error clearing routes in Firestore:', err);
       }
     }
   };
@@ -685,6 +688,7 @@ export const TravelProvider = ({ children }) => {
         addRoute,
         updateRoute,
         deleteRoute,
+        clearAllRoutes,
         toggleRouteActive,
         addVehicle,
         updateVehicle,

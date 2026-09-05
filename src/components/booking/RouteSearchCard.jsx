@@ -41,9 +41,13 @@ export const RouteSearchCard = ({ searchParams, setSearchParams, onSearch }) => 
             onChange={(e) => handleChange('origin', e.target.value)}
             required
           >
-            {origins.map(origin => (
-              <option key={origin} value={origin}>{origin}</option>
-            ))}
+            {origins.length === 0 ? (
+              <option value="">Belum ada rute tersedia</option>
+            ) : (
+              origins.map(origin => (
+                <option key={origin} value={origin}>{origin}</option>
+              ))
+            )}
           </select>
         </div>
 
@@ -72,9 +76,13 @@ export const RouteSearchCard = ({ searchParams, setSearchParams, onSearch }) => 
             onChange={(e) => handleChange('destination', e.target.value)}
             required
           >
-            {destinations.map(dest => (
-              <option key={dest} value={dest}>{dest}</option>
-            ))}
+            {destinations.length === 0 ? (
+              <option value="">Belum ada rute tersedia</option>
+            ) : (
+              destinations.map(dest => (
+                <option key={dest} value={dest}>{dest}</option>
+              ))
+            )}
           </select>
         </div>
 

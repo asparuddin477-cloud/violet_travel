@@ -14,7 +14,7 @@ import { useTravel } from '../../context/TravelContext';
 import { estimateRouteDetails, SUGGESTED_CITIES } from '../../utils/routeEstimator';
 
 export const RouteSettings = () => {
-  const { routes, schedules, addRoute, updateRoute, deleteRoute, toggleRouteActive, addSchedule, deleteSchedule, formatRupiah, settings } = useTravel();
+  const { routes, schedules, addRoute, updateRoute, deleteRoute, clearAllRoutes, toggleRouteActive, addSchedule, deleteSchedule, formatRupiah, settings } = useTravel();
 
   const availablePickupTypes = settings?.pickupServiceTypes?.length > 0
     ? settings.pickupServiceTypes.filter(s => s.active !== false)
@@ -165,10 +165,30 @@ export const RouteSettings = () => {
             </p>
           </div>
 
-          <button className="btn-add-entity" onClick={handleOpenAdd}>
-            <Plus size={18} />
-            <span>Tambah Rute Baru</span>
-          </button>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {routes.length > 0 && (
+              <button
+                type="button"
+                className="btn-select-vehicle"
+                style={{ width: 'auto', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', padding: '0.65rem 1.25rem' }}
+                onClick={() => {
+                  if (confirm('Apakah Anda yakin ingin menghapus SEMUA rute saat ini? Tindakan ini akan mengosongkan rute di cloud & lokal.')) {
+                    clearAllRoutes();
+                    setToastMsg('Semua rute berhasil dikosongkan!');
+                    setTimeout(() => setToastMsg(''), 4000);
+                  }
+                }}
+              >
+                <Trash2 size={16} />
+                <span>Kosongkan Semua Rute</span>
+              </button>
+            )}
+
+            <button className="btn-add-entity" onClick={handleOpenAdd}>
+              <Plus size={18} />
+              <span>Tambah Rute Baru</span>
+            </button>
+          </div>
         </div>
 
         <div className="table-responsive">
@@ -184,7 +204,15 @@ export const RouteSettings = () => {
               </tr>
             </thead>
             <tbody>
-              {routes.map((route) => (
+              {routes.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '6px' }}>Belum ada rute perjalanan yang tersimpan</div>
+                    <div style={{ fontSize: '0.85rem' }}>Klik tombol <strong>Tambah Rute Baru</strong> di atas untuk menambahkan rute operasional Anda.</div>
+                  </td>
+                </tr>
+              ) : (
+                routes.map((route) => (
                 <tr key={route.id}>
                   <td>
                     <button
@@ -239,7 +267,8 @@ export const RouteSettings = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>
