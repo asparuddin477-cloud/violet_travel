@@ -184,3 +184,23 @@ export const seedInitialDataToFirebase = async (initialData) => {
   await batch.commit();
   return true;
 };
+
+/**
+ * Delete all documents in a Firestore collection
+ */
+export const clearCollection = async (collectionName) => {
+  if (!db) return;
+  try {
+    const colRef = collection(db, collectionName);
+    const snapshot = await getDocs(colRef);
+    if (snapshot.empty) return;
+    const batch = writeBatch(db);
+    snapshot.docs.forEach((docSnap) => {
+      batch.delete(docSnap.ref);
+    });
+    await batch.commit();
+  } catch (error) {
+    console.error(`Error clearing collection ${collectionName}:`, error);
+  }
+};
+

@@ -16,8 +16,11 @@ import {
   saveDocument,
   updateDocument,
   deleteDocument,
-  seedInitialDataToFirebase
+  seedInitialDataToFirebase,
+  clearCollection
 } from '../services/firebase';
+
+const DUMMY_BOOKING_IDS = ['BK-VT260901', 'BK-VT260902', 'BK-VT260903'];
 
 const TravelContext = createContext(null);
 
@@ -45,7 +48,15 @@ export const TravelProvider = ({ children }) => {
 
   const [bookings, setBookings] = useState(() => {
     const saved = localStorage.getItem('vt_bookings');
-    return saved ? JSON.parse(saved) : INITIAL_BOOKINGS;
+    if (!saved) return [];
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) 
+        ? parsed.filter(b => !DUMMY_BOOKING_IDS.includes(b.id) && !b.id?.startsWith('BK-VT26090'))
+        : [];
+    } catch {
+      return [];
+    }
   });
 
   const [settings, setSettings] = useState(() => {
@@ -143,9 +154,20 @@ export const TravelProvider = ({ children }) => {
 
     // 5. Subscribe to Bookings (real-time order updates for all users)
     const unsubBookings = subscribeCollection('bookings', (remoteBookings) => {
-      if (remoteBookings && remoteBookings.length > 0) {
+      if (remoteBookings) {
+        // Automatically delete dummy bookings from Firestore if they were previously seeded
+        remoteBookings.forEach((b) => {
+          if (DUMMY_BOOKING_IDS.includes(b.id) || (b.id && b.id.startsWith('BK-VT26090'))) {
+            deleteDocument('bookings', b.id).catch(() => {});
+          }
+        });
+
+        const realBookings = remoteBookings.filter(
+          (b) => !DUMMY_BOOKING_IDS.includes(b.id) && !b.id?.startsWith('BK-VT26090')
+        );
+
         // Sort newest first
-        const sorted = [...remoteBookings].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+        const sorted = [...realBookings].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
         setBookings(sorted);
       }
     });
@@ -183,7 +205,7 @@ export const TravelProvider = ({ children }) => {
         vehicles: INITIAL_VEHICLES,
         drivers: INITIAL_DRIVERS,
         schedules: INITIAL_SCHEDULES,
-        bookings: INITIAL_BOOKINGS,
+        bookings: [],
         settings: INITIAL_SETTINGS
       });
       setIsCloudConnected(true);
@@ -464,6 +486,29 @@ export const TravelProvider = ({ children }) => {
     }
   };
 
+  const deleteBooking = async (id) => {
+    setBookings((prev) => prev.filter((b) => b.id !== id));
+    if (isFirebaseConfigured) {
+      try {
+        await deleteDocument('bookings', id);
+      } catch (err) {
+        console.error('Error deleting booking in Firestore:', err);
+      }
+    }
+  };
+
+  const clearAllBookings = async () => {
+    setBookings([]);
+    localStorage.setItem('vt_bookings', JSON.stringify([]));
+    if (isFirebaseConfigured) {
+      try {
+        await clearCollection('bookings');
+      } catch (err) {
+        console.error('Error clearing bookings in Firestore:', err);
+      }
+    }
+  };
+
   // Assign driver to a booking
   const assignDriverToBooking = async (bookingId, driverId) => {
     const targetDriver = drivers.find((d) => d.id === driverId);
@@ -653,6 +698,8 @@ export const TravelProvider = ({ children }) => {
         updateBookingStatus,
         updatePaymentStatus,
         cancelBooking,
+        deleteBooking,
+        clearAllBookings,
         assignDriverToBooking,
         acceptDriverTask,
         dropoffPassenger,

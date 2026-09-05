@@ -14,7 +14,8 @@ import {
   UserCheck,
   Bell,
   Check,
-  AlertCircle
+  AlertCircle,
+  Trash2
 } from 'lucide-react';
 import { useTravel } from '../../context/TravelContext';
 
@@ -26,6 +27,8 @@ export const BookingManifest = ({ onOpenTicketModal }) => {
     updateBookingStatus, 
     updatePaymentStatus, 
     assignDriverToBooking, 
+    deleteBooking,
+    clearAllBookings,
     formatRupiah 
   } = useTravel();
 
@@ -93,14 +96,34 @@ export const BookingManifest = ({ onOpenTicketModal }) => {
           </p>
         </div>
 
-        <button
-          className="btn-select-vehicle"
-          style={{ width: 'auto', background: '#0f172a', padding: '0.65rem 1.25rem' }}
-          onClick={() => window.print()}
-        >
-          <Printer size={16} />
-          <span>Cetak Manifest Hari Ini</span>
-        </button>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {bookings.length > 0 && (
+            <button
+              type="button"
+              className="btn-select-vehicle"
+              style={{ width: 'auto', background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca', padding: '0.65rem 1.25rem' }}
+              onClick={() => {
+                if (confirm('Apakah Anda yakin ingin menghapus SEMUA pesanan/manifest saat ini? Tindakan ini akan mengosongkan data pemesanan di cloud & lokal.')) {
+                  clearAllBookings();
+                  setToastMsg('Semua data pesanan berhasil dikosongkan!');
+                  setTimeout(() => setToastMsg(''), 4000);
+                }
+              }}
+            >
+              <Trash2 size={16} />
+              <span>Kosongkan Semua Pesanan</span>
+            </button>
+          )}
+
+          <button
+            className="btn-select-vehicle"
+            style={{ width: 'auto', background: '#0f172a', padding: '0.65rem 1.25rem' }}
+            onClick={() => window.print()}
+          >
+            <Printer size={16} />
+            <span>Cetak Manifest Hari Ini</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter Bar */}
@@ -348,13 +371,27 @@ export const BookingManifest = ({ onOpenTicketModal }) => {
                     </td>
 
                     <td>
-                      <div className="action-btns-group" style={{ justifyContent: 'center' }}>
+                      <div className="action-btns-group" style={{ justifyContent: 'center', display: 'flex', gap: '4px' }}>
                         <button
                           className="btn-table-icon"
                           onClick={() => onOpenTicketModal(b)}
                           title="Buka E-Ticket"
                         >
                           <Eye size={15} />
+                        </button>
+                        <button
+                          className="btn-table-icon"
+                          style={{ color: '#dc2626' }}
+                          onClick={() => {
+                            if (confirm(`Hapus pesanan ${b.bookingCode} (${b.passengerName})?`)) {
+                              deleteBooking(b.id);
+                              setToastMsg(`Pesanan ${b.bookingCode} berhasil dihapus.`);
+                              setTimeout(() => setToastMsg(''), 3000);
+                            }
+                          }}
+                          title="Hapus Pesanan"
+                        >
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     </td>
