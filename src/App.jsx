@@ -199,8 +199,9 @@ function TravelApp() {
     }, 100);
   };
 
-  const handleBookingSuccess = (createdBooking) => {
-    setActiveTicketModal(createdBooking);
+  const handleBookingSuccess = async (createdBooking) => {
+    const resolvedBooking = (createdBooking instanceof Promise) ? await createdBooking : createdBooking;
+    setActiveTicketModal(resolvedBooking);
     setSelectedVehicle(null);
     setSelectedSeats([]);
     setShowPassengerForm(false);
