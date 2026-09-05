@@ -129,6 +129,54 @@ function TravelApp() {
   const seatSectionRef = useRef(null);
   const passengerSectionRef = useRef(null);
 
+  // Guard against accidental back swipe / browser closure on mobile devices
+  useEffect(() => {
+    // Push dummy history entry so swipe-back gesture does not exit the app
+    window.history.pushState({ app: 'violet_travel' }, '');
+
+    const handlePopState = () => {
+      if (activeTicketModal) {
+        setActiveTicketModal(null);
+        window.history.pushState({ app: 'violet_travel' }, '');
+        return;
+      }
+      if (isLoginModalOpen) {
+        setIsLoginModalOpen(false);
+        window.history.pushState({ app: 'violet_travel' }, '');
+        return;
+      }
+      if (showPassengerForm) {
+        setShowPassengerForm(false);
+        window.history.pushState({ app: 'violet_travel' }, '');
+        return;
+      }
+      if (selectedVehicle) {
+        setSelectedVehicle(null);
+        setSelectedSeats([]);
+        window.history.pushState({ app: 'violet_travel' }, '');
+        return;
+      }
+      if (isAdminMode || isDriverPortal) {
+        setIsAdminMode(false);
+        setIsDriverPortal(false);
+        setCurrentTab('booking');
+        window.history.pushState({ app: 'violet_travel' }, '');
+        return;
+      }
+      if (currentTab !== 'booking') {
+        setCurrentTab('booking');
+        window.history.pushState({ app: 'violet_travel' }, '');
+        return;
+      }
+
+      // If already at initial view, absorb the back gesture so the app stays open
+      window.history.pushState({ app: 'violet_travel' }, '');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [activeTicketModal, isLoginModalOpen, showPassengerForm, selectedVehicle, isAdminMode, isDriverPortal, currentTab]);
+
   // Find matching route
   const activeRoute = routes.find(
     r => r.active && r.origin === searchParams.origin && r.destination === searchParams.destination
