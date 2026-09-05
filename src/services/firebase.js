@@ -12,12 +12,12 @@ import {
 } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || ''
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBZJu-zH6c0ENk0slhHToYub8SaFmdcCVo',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'violet-65ba3.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'violet-65ba3',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'violet-65ba3.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '833444539463',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:833444539463:web:acaa1c0c5689fb95431562'
 };
 
 // Check if valid Firebase configuration is provided
