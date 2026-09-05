@@ -3,13 +3,17 @@ import { Sparkles, ShieldCheck, Armchair, MapPin, Clock, Star } from 'lucide-rea
 import { useTravel } from '../context/TravelContext';
 
 export const HeroBanner = () => {
-  const { routes, vehicles, drivers } = useTravel();
+  const { routes, vehicles, drivers, settings } = useTravel();
 
   const activeVehicles = vehicles.filter(v => v.status !== 'Nonaktif');
   const vehicleNames = activeVehicles.map(v => v.name).filter(Boolean);
   const vehicleSummaryText = vehicleNames.length > 0
     ? vehicleNames.slice(0, 3).join(', ')
-    : 'eksekutif pilihan';
+    : 'Innova, iNNOVA';
+
+  const heroBadge = settings?.heroBadge || 'Official Executive Travel & Shuttle Partner';
+  const heroTitle = settings?.heroTitle || 'Pesan Tiket Travel Cepat, Pilih Kursi Sendiri Sesuai Kenyamanan Anda';
+  const heroDesc = settings?.heroDesc || `Layanan antar jemput door-to-door dengan armada ${vehicleSummaryText}. Didukung pengemudi berpengalaman, tarif transparan, dan sistem reservasi real-time.`;
 
   return (
     <section className="hero-banner">
@@ -22,15 +26,15 @@ export const HeroBanner = () => {
                 alt="Logo Violet Transport" 
                 style={{ width: '22px', height: '22px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255,255,255,0.4)' }} 
               />
-              <span>Official Executive Travel & Shuttle Partner</span>
+              <span>{heroBadge}</span>
             </div>
             
             <h1 className="hero-title">
-              Pesan Tiket Travel Cepat, <span>Pilih Kursi Sendiri</span> Sesuai Kenyamanan Anda
+              {heroTitle}
             </h1>
             
             <p className="hero-desc">
-              Layanan antar jemput door-to-door dengan armada {vehicleSummaryText}. Didukung pengemudi berpengalaman, tarif transparan, dan sistem reservasi real-time.
+              {heroDesc}
             </p>
 
             <div className="hero-features-badge">

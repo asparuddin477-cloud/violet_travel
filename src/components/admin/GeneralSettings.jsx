@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Building, 
   Phone, 
@@ -40,11 +40,34 @@ export const GeneralSettings = () => {
     companyName: settings.companyName || 'Violet Transport',
     legalName: settings.legalName || 'PT Violet Transport Nusantara',
     tagline: settings.tagline || 'Your Trusted Travel Partner - Perjalanan Eksekutif Aman, Nyaman, & Tepat Waktu',
+    heroBadge: settings.heroBadge || 'Official Executive Travel & Shuttle Partner',
+    heroTitle: settings.heroTitle || 'Pesan Tiket Travel Cepat, Pilih Kursi Sendiri Sesuai Kenyamanan Anda',
+    heroDesc: settings.heroDesc || 'Layanan antar jemput door-to-door dengan armada Innova, iNNOVA. Didukung pengemudi berpengalaman, tarif transparan, dan sistem reservasi real-time.',
     csPhone: settings.csPhone || '0812-3456-7890',
     csWhatsApp: settings.csWhatsApp || '6281234567890',
     email: settings.email || 'halo@violettransport.id',
     address: settings.address || 'Jl. P. Antasari No. 88, Samarinda'
   });
+
+  useEffect(() => {
+    if (settings) {
+      setForm(prev => ({
+        ...prev,
+        companyName: settings.companyName ?? prev.companyName,
+        legalName: settings.legalName ?? prev.legalName,
+        tagline: settings.tagline ?? prev.tagline,
+        heroBadge: settings.heroBadge ?? prev.heroBadge,
+        heroTitle: settings.heroTitle ?? prev.heroTitle,
+        heroDesc: settings.heroDesc ?? prev.heroDesc,
+        csPhone: settings.csPhone ?? prev.csPhone,
+        csWhatsApp: settings.csWhatsApp ?? prev.csWhatsApp,
+        email: settings.email ?? prev.email,
+        address: settings.address ?? prev.address
+      }));
+      if (settings.bankAccounts) setBankAccounts(settings.bankAccounts);
+      if (settings.pickupServiceTypes) setPickupTypes(settings.pickupServiceTypes);
+    }
+  }, [settings]);
 
   const [bankAccounts, setBankAccounts] = useState(settings.bankAccounts || []);
   const [pickupTypes, setPickupTypes] = useState(
@@ -239,6 +262,79 @@ export const GeneralSettings = () => {
               value={form.tagline}
               onChange={(e) => setForm({ ...form, tagline: e.target.value })}
             />
+          </div>
+
+          {/* Kolom Konten Hero Banner (Halaman Depan) */}
+          <div style={{ 
+            background: 'linear-gradient(135deg, #fbf8ff 0%, #f3e8ff 100%)', 
+            border: '1.5px solid #d8b4fe', 
+            borderRadius: 'var(--radius-md)', 
+            padding: '1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            marginTop: '0.25rem',
+            marginBottom: '0.25rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1.2rem' }}>✨</span>
+              <div>
+                <strong style={{ fontSize: '0.96rem', color: '#6b21a8' }}>
+                  Konten Banner Utama (Hero Banner Halaman Depan)
+                </strong>
+                <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#7e22ce' }}>
+                  Atur teks judul besar dan deskripsi layanan yang langsung dilihat pengunjung di bagian atas halaman utama.
+                </p>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label style={{ fontWeight: 700, color: '#4c1d95' }}>
+                Judul Utama Banner (Headline)
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Contoh: Pesan Tiket Travel Cepat, Pilih Kursi Sendiri Sesuai Kenyamanan Anda"
+                value={form.heroTitle}
+                onChange={(e) => setForm({ ...form, heroTitle: e.target.value })}
+                style={{ borderColor: '#c084fc', background: '#ffffff', fontWeight: 600 }}
+              />
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '3px', display: 'block' }}>
+                Teks judul besar utama yang tampil di atas halaman pemesanan tiket.
+              </span>
+            </div>
+
+            <div className="form-group">
+              <label style={{ fontWeight: 700, color: '#4c1d95' }}>
+                Deskripsi / Rincian Layanan Banner (Sub-headline)
+              </label>
+              <textarea
+                className="form-control"
+                rows={3}
+                placeholder="Contoh: Layanan antar jemput door-to-door dengan armada Innova, iNNOVA. Didukung pengemudi berpengalaman, tarif transparan, dan sistem reservasi real-time."
+                value={form.heroDesc}
+                onChange={(e) => setForm({ ...form, heroDesc: e.target.value })}
+                style={{ borderColor: '#c084fc', background: '#ffffff', resize: 'vertical' }}
+              />
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '3px', display: 'block' }}>
+                Teks deskripsi layanan penjemputan, armada, dan informasi keunggulan travel.
+              </span>
+            </div>
+
+            <div className="form-group">
+              <label style={{ fontWeight: 600, color: '#4c1d95', fontSize: '0.84rem' }}>
+                Badge Label di Atas Judul (Opsional)
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Contoh: Official Executive Travel & Shuttle Partner"
+                value={form.heroBadge}
+                onChange={(e) => setForm({ ...form, heroBadge: e.target.value })}
+                style={{ borderColor: '#c084fc', background: '#ffffff' }}
+              />
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
