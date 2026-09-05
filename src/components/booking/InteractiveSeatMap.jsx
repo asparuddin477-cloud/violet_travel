@@ -63,7 +63,6 @@ export const InteractiveSeatMap = ({
           />
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="vehicle-plate" style={{ fontSize: '0.75rem' }}>{vehicle.plateNumber}</span>
               <span style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700 }}>
                 {layout.title || vehicle.name}
               </span>

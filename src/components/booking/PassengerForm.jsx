@@ -391,7 +391,7 @@ export const PassengerForm = ({
 
             <div className="summary-row">
               <span>Armada Mobil:</span>
-              <span>{vehicle.name} ({vehicle.plateNumber})</span>
+              <span>{vehicle.name}</span>
             </div>
 
             <div className="summary-row">

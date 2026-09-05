@@ -72,7 +72,6 @@ export const VehicleCard = ({
             <div>
               <h3 className="vehicle-name">{vehicle.name}</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-                <span className="vehicle-plate">{vehicle.plateNumber}</span>
                 <span style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
                   <Armchair size={13} />
                   Denah: {vehicle.seatLayoutType || 'Standar'} ({vehicle.capacity} Kursi)
@@ -171,8 +170,7 @@ export const VehicleCard = ({
 
             <div style={{ padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#1e293b' }}>
               <div>
-                <span className="vehicle-plate">{vehicle.plateNumber}</span>
-                <h3 style={{ fontSize: '1.25rem', color: 'white', margin: '4px 0 2px' }}>{vehicle.name}</h3>
+                <h3 style={{ fontSize: '1.25rem', color: 'white', margin: '0 0 2px' }}>{vehicle.name}</h3>
                 <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
                   Kategori: {vehicle.category} • {vehicle.capacity} Kursi Penumpang ({vehicle.seatLayoutType})
                 </span>

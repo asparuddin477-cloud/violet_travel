@@ -435,25 +435,11 @@ function TravelApp() {
                       style={{ 
                         display: 'flex', 
                         alignItems: 'center', 
-                        justifyContent: 'space-between', 
                         gap: '8px',
-                        padding: '2px 0'
+                        padding: '3px 0'
                       }}
                     >
                       <span style={{ fontWeight: 500 }}>{v.name}</span>
-                      {v.plateNumber && (
-                        <span style={{ 
-                          fontSize: '0.72rem', 
-                          background: 'rgba(255,255,255,0.12)', 
-                          padding: '1px 7px', 
-                          borderRadius: '4px', 
-                          color: '#e2e8f0',
-                          border: '1px solid rgba(255,255,255,0.18)',
-                          letterSpacing: '0.04em'
-                        }}>
-                          {v.plateNumber}
-                        </span>
-                      )}
                     </li>
                   ))
                 )}

@@ -29,7 +29,7 @@ export const ETicketModal = ({ booking, onClose }) => {
       `*Kode Booking:* ${booking.bookingCode}\n` +
       `*Rute:* ${booking.routeName}\n` +
       `*Tanggal:* ${booking.travelDate} (${booking.departureTime})\n` +
-      `*Armada:* ${booking.vehicleName} (${booking.plateNumber})\n` +
+      `*Armada:* ${booking.vehicleName}\n` +
       `*Kursi:* ${booking.selectedSeats?.join(', ')}\n` +
       `*Nama Penumpang:* ${booking.passengerName}\n` +
       `*Layanan Jemput:* ${booking.pickupType || 'Door to Door'}\n` +
@@ -135,9 +135,8 @@ export const ETicketModal = ({ booking, onClose }) => {
             </div>
 
             <div className="ticket-field">
-              <label>Kendaraan & Plat Nomor</label>
+              <label>Armada Kendaraan</label>
               <p>{booking.vehicleName}</p>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Plat: {booking.plateNumber}</span>
             </div>
 
             <div className="ticket-field">
