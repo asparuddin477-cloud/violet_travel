@@ -144,7 +144,7 @@ export const Navbar = ({
           >
             <span className={`pulse-dot ${isCloudConnected ? 'online' : 'local'}`} />
             {isCloudConnected ? <Cloud size={13} /> : <Database size={13} />}
-            <span>{isCloudConnected ? 'Cloud Live' : 'Mode Lokal'}</span>
+            <span className="cloud-status-text">{isCloudConnected ? 'Cloud Live' : 'Mode Lokal'}</span>
           </div>
 
           {currentUser ? (
@@ -165,10 +165,10 @@ export const Navbar = ({
                   style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }}
                 />
                 <div style={{ textAlign: 'left', lineHeight: 1.15 }}>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  <div className="user-pill-name" style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {currentUser.name}
                   </div>
-                  <span style={{ 
+                  <span className="user-pill-role" style={{ 
                     fontSize: '0.64rem', 
                     fontWeight: 700,
                     color: currentUser.role === 'superadmin' ? '#9333ea' : currentUser.role === 'admin' ? '#2563eb' : '#059669' 
@@ -292,7 +292,7 @@ export const Navbar = ({
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Menu Navigasi"
           >
-            {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
