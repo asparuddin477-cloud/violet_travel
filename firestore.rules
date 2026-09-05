@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Aturan Firestore untuk Violet Travel Nusantara
+    // Mengizinkan baca & tulis untuk kolaborasi bersama tim & pelanggan
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
